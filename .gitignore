@@ -1,4 +1,4 @@
-# Environment files and secrets
+# Secrets and local configuration must never enter this public repository.
 .env
 .env.*
 !.env.example
