@@ -1,94 +1,93 @@
 # VEXIS Core — Mental Performance Platform
 
-VEXIS Core is a deployed mental performance web application designed to make structured mental training accessible to everyday people, athletes, and high-pressure performers.
+An engineering case study of a deployed mental performance web application.
 
-## Live Demo
+[Live application](https://www.vexistech.co.uk/) · [Architecture](architecture/README.md) · [Engineering case study](docs/PRODUCT_OVERVIEW.md) · [Repository scope](docs/PRIVACY_AND_SCOPE.md)
 
-[Visit VEXIS Core](https://www.vexistech.co.uk/)
+## Overview
+
+VEXIS Core makes structured mental training available through a responsive web application. The deployed product includes a practice library organised around Foundation, Intuition, and Performance, with authenticated user access and persisted user/session data.
+
+This repository documents the engineering work behind the shipped application. It is not the production codebase.
 
 ## My Role
 
-I am the founder and builder of VEXIS Core. I designed, built, tested, deployed, and iterated the product using AI-assisted development. AI acted as a development partner, while I remained responsible for product direction, technical decisions, testing, and delivery.
+I am the founder and developer. I took the product from concept to deployment: defining the initial scope, implementing the frontend, integrating authentication and persistence, testing releases, investigating production issues, and iterating from observed behaviour.
 
-## Key Shipped Features
+I used AI-assisted development to explore approaches and accelerate implementation. I remained responsible for requirements, technical choices, code review, testing, debugging, and release decisions.
 
-- Deployed live web application
-- Structured mental training practice library
-- Foundation, Intuition, and Performance-based training structure
-- User authentication using Supabase
-- PostgreSQL-backed user and session architecture
-- Mobile-friendly experience
-- PWA-ready structure
-- Iterative deployment through GitHub and Vercel
+## Shipped System
 
-## Tech Stack
+- Responsive browser-based training experience
+- Structured practice library
+- Supabase authentication
+- PostgreSQL-backed user and session data
+- GitHub-based source control workflow
+- Vercel deployment
+- Progressive Web App considerations in the application structure
 
-- HTML
-- CSS
-- JavaScript
-- Supabase
-- PostgreSQL
-- Git and GitHub
-- Vercel
-- Progressive Web App (PWA) concepts
-- Authentication
-- Responsive web design
+## Technology and Rationale
 
-## Architecture Overview
+| Area | Technology | Reasoning and trade-off |
+| --- | --- | --- |
+| Frontend | HTML, CSS, JavaScript | Kept the shipped application simple and browser-native. This reduced framework overhead, but required more manual organisation as the interface grew. |
+| Authentication | Supabase Auth | Provided managed identity and session handling without building a custom authentication service. The trade-off is dependency on a platform-specific integration. |
+| Persistence | Supabase / PostgreSQL | Combined a relational data model with managed infrastructure. This reduced operational work while still requiring careful data modelling and access-control decisions. |
+| Hosting | Vercel | Supported repeatable web deployments and a short feedback loop from repository changes to production. |
+| Workflow | Git and GitHub | Provided version history, isolated changes, and a recoverable deployment workflow. |
+| UX | Responsive design and PWA concepts | Prioritised access across mobile and desktop browsers. PWA readiness is an architectural direction, not a claim of complete offline support. |
+
+## Architecture
 
 ```text
-User
-  ↓
-VEXIS Core frontend
-  ↓
-Supabase Auth
-  ↓
-PostgreSQL database
-  ↓
-Vercel deployment
+                         ┌──────────────────────┐
+                         │   Supabase Auth      │
+                         └──────────▲───────────┘
+                                    │
+User ──► VEXIS Core frontend ───────┤
+             │                      │
+             │                      ▼
+             │           ┌──────────────────────┐
+             │           │ PostgreSQL database  │
+             │           └──────────────────────┘
+             ▼
+       Vercel hosting
 ```
 
-This diagram is intentionally high-level. It communicates the product's main technology relationships without exposing private implementation details. See [architecture/README.md](architecture/README.md) for more context.
+Vercel hosts the frontend; the application uses Supabase for authentication and access to PostgreSQL-backed data. The diagram is intentionally conceptual because deployment configuration, database design, and access policies belong to the private production repository.
 
-## Screenshots
+See the [architecture overview](architecture/README.md) for component responsibilities, request flow, and trade-offs.
 
-The repository includes clearly labelled placeholders for a curated set of product screenshots. Images will be added only after they have been checked for personal data, credentials, and commercially sensitive details.
+## Engineering Approach
 
-| View | Placeholder |
-| --- | --- |
-| Home page | [screenshots/home-page.md](screenshots/home-page.md) |
-| Practice library | [screenshots/practice-library.md](screenshots/practice-library.md) |
-| Authentication flow | [screenshots/authentication-flow.md](screenshots/authentication-flow.md) |
-| Mobile experience | [screenshots/mobile-experience.md](screenshots/mobile-experience.md) |
+Development followed small, testable increments:
 
-## What I Learned
+1. Define a user-facing problem and the smallest useful change.
+2. Implement and test the change locally.
+3. Commit the change with Git and deploy through the GitHub/Vercel workflow.
+4. Verify behaviour in the deployed environment.
+5. Diagnose regressions by separating frontend, authentication, persistence, and deployment concerns.
+6. Use the result to choose the next improvement.
 
-- How to move from an idea to a shipped product
-- How to debug production issues
-- How authentication and databases connect to a frontend
-- How to use Git and GitHub workflows
-- How to deploy with Vercel
-- How to break large problems into small, shippable improvements
-- How to build with AI as a development partner while still making product and technical decisions myself
+This process made failures easier to isolate and kept product decisions connected to working software rather than speculative scope.
 
-## Why This Repository Exists
+## Technical Lessons
 
-The production repository is private because VEXIS is an active commercial project. This showcase repository gives employers a clear, honest overview of the shipped product, its high-level architecture, the technologies used, and the learning journey behind it—without publishing production source code, credentials, private implementation details, prototypes, or commercially sensitive material.
+- Shipping exposed integration problems that were not visible when frontend, authentication, and data persistence were considered separately.
+- Production debugging improved when I identified the failing boundary first—browser state, authentication, database interaction, or deployment—before changing code.
+- Managed services reduced the amount of infrastructure I needed to operate, but did not remove responsibility for session behaviour, data access, error handling, or configuration.
+- Small commits and repeatable deployments made iteration safer and regressions easier to trace.
+- Responsive behaviour needs testing at realistic viewport sizes and interaction states, not only visual inspection at desktop width.
+- AI assistance is most useful when paired with explicit requirements, review, verification, and ownership of the final decision.
 
-## Status
+## Current Status and Scope
 
-VEXIS Core is deployed. The newer React migration is intentionally excluded from this showcase because it is still in progress.
+VEXIS Core is deployed at [vexistech.co.uk](https://www.vexistech.co.uk/). A newer React migration is in progress and is intentionally excluded because it is not the deployed system documented here.
 
-## Repository Scope
+The production repository remains private because VEXIS is an active commercial project. This public case study excludes source code, credentials, database schemas, access policies, environment configuration, prototypes, customer data, and commercially sensitive implementation details. The full boundary is documented in [Privacy and Showcase Scope](docs/PRIVACY_AND_SCOPE.md).
 
-This is a portfolio and documentation repository, not the production source code. It intentionally excludes:
-
-- Secrets, API keys, and Supabase credentials
-- Production source code and private implementation details
-- Unfinished React migration work
-- SignAI prototypes
-- Commercially sensitive material
+Screenshots are also intentionally omitted for now: the live application is available, and static images would add little engineering evidence unless they demonstrate a specific responsive, accessibility, performance, or debugging decision.
 
 ## Licence
 
-The original documentation in this showcase repository is available under the [MIT License](LICENSE). VEXIS names, branding, product content, and the private production application are not granted for reuse by this licence.
+The original documentation in this repository is available under the [MIT License](LICENSE). VEXIS names, branding, product content, and the private production application are not granted for reuse by this licence.

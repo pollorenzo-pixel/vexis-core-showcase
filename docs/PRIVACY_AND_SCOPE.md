@@ -1,25 +1,28 @@
-# Privacy and Showcase Scope
+# Repository Scope and Disclosure Policy
 
-This repository documents a commercial product without reproducing its private production codebase.
+This repository is a technical case study for an active commercial product. It documents the deployed system without reproducing the private production codebase.
 
 ## Included
 
-- Public product description
-- High-level technology choices
-- Conceptual architecture
-- Shipped feature summary
-- Sanitised screenshot placeholders
-- Development learning and delivery approach
+- The problem addressed and delivered product scope
+- Technologies used in the deployed application
+- Conceptual component responsibilities and request flow
+- Engineering decisions, constraints, and trade-offs
+- Development, deployment, and debugging approach
+- Honest reflection on limitations and next steps
 
 ## Excluded
 
-- API keys, tokens, passwords, and environment variables
-- Supabase URLs, credentials, policies, and project identifiers
-- Database schemas, migrations, queries, and customer data
-- Private endpoints and implementation details
-- Production source code
-- Unfinished React migration work
-- SignAI prototypes
-- Commercially sensitive product material
+- Production source code and internal endpoints
+- Secrets, credentials, environment variables, and project identifiers
+- Database schemas, migrations, queries, and access policies
+- Authentication configuration and token-handling details
+- Logs, analytics, customer information, and user data
+- Unfinished React migration work and unrelated prototypes
+- Commercially sensitive product content
 
-Screenshots must be reviewed before publication to ensure they contain no personal data, account details, credentials, internal tooling, or private product information.
+## Evidence Standard
+
+Public material should add engineering evidence rather than decoration. Screenshots, diagrams, or examples should be included only when they explain a specific implementation decision, trade-off, debugging result, accessibility concern, responsive behaviour, or measured outcome.
+
+Before publication, every artifact should be checked for personal data, credentials, private URLs, internal tooling, account details, and unreleased functionality.
