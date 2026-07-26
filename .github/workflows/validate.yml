@@ -10,7 +10,7 @@ on:
       - main
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: showcase-validation-${{ github.workflow }}-${{ github.ref }}
@@ -24,6 +24,8 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref || github.ref_name }}
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -35,31 +37,21 @@ jobs:
       - name: Install dependencies
         run: npm install --no-audit --no-fund
 
-      - name: Capture lint result
-        id: lint
+      - name: Commit generated lockfile
+        if: github.event_name == 'push' && github.ref == 'refs/heads/feature/employer-facing-code-samples'
         shell: bash
         run: |
-          set +e
-          npm run lint > lint.log 2>&1
-          code=$?
-          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
-          exit 0
+          if git diff --quiet -- package-lock.json && git ls-files --error-unmatch package-lock.json >/dev/null 2>&1; then
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add package-lock.json
+          git commit -m "chore(showcase): lock frontend dependencies"
+          git push
 
-      - name: Upload validation diagnostics
-        uses: actions/upload-artifact@v4
-        with:
-          name: validation-diagnostics
-          path: |
-            lint.log
-            package-lock.json
-          if-no-files-found: error
-          retention-days: 1
-
-      - name: Enforce lint result
-        if: steps.lint.outputs.exit_code != '0'
-        run: |
-          cat lint.log
-          exit 1
+      - name: Lint
+        run: npm run lint
 
       - name: Type-check
         run: npm run typecheck
