@@ -2,7 +2,7 @@
 
 A privacy-safe React and TypeScript reconstruction demonstrating frontend implementation, typed service boundaries, testing, accessibility and engineering judgement behind the VEXIS product.
 
-[Live VEXIS product](https://www.vexistech.co.uk/) · [60-second review guide](docs/EMPLOYER_REVIEW_GUIDE.md) · [Engineering decisions](docs/ENGINEERING_DECISIONS.md) · [Debugging case study](docs/DEBUGGING_CASE_STUDY.md) · [Repository boundary](docs/PRIVACY_AND_SCOPE.md)
+[Live VEXIS React application](https://vexis-app-private-j0chh6inx-pol-s-projects5.vercel.app/) · [60-second review guide](docs/EMPLOYER_REVIEW_GUIDE.md) · [Engineering decisions](docs/ENGINEERING_DECISIONS.md) · [Debugging case study](docs/DEBUGGING_CASE_STUDY.md) · [Repository boundary](docs/PRIVACY_AND_SCOPE.md)
 
 > This repository is not the production VEXIS codebase. The public demo was independently reconstructed with synthetic data so employers can inspect representative engineering work without exposing commercial source code, user data, credentials or proprietary training content.
 
@@ -150,7 +150,7 @@ The deployed system and this reconstruction serve different purposes:
 | Private infrastructure and configuration | Inspectable public React/TypeScript patterns |
 | Private repository | Public clean-room reconstruction |
 
-The live product is available at [vexistech.co.uk](https://www.vexistech.co.uk/).
+The live React application is available at [VEXIS React application](https://vexis-app-private-j0chh6inx-pol-s-projects5.vercel.app/).
 
 ## Confidentiality boundary
 
