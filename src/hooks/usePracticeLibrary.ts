@@ -16,7 +16,6 @@ export function usePracticeLibrary() {
   });
 
   const load = useCallback(async () => {
-    setState((current) => ({ ...current, status: "loading", errorMessage: null }));
     const result = await getPractices();
 
     if (!result.ok) {
@@ -27,9 +26,14 @@ export function usePracticeLibrary() {
     setState({ practices: result.data, status: "success", errorMessage: null });
   }, []);
 
+  const retry = useCallback(async () => {
+    setState((current) => ({ ...current, status: "loading", errorMessage: null }));
+    await load();
+  }, [load]);
+
   useEffect(() => {
     void load();
   }, [load]);
 
-  return { ...state, retry: load };
+  return { ...state, retry };
 }
