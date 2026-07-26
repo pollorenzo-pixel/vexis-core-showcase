@@ -41,29 +41,29 @@ jobs:
       - name: Type-check
         run: npm run typecheck
 
-      - name: Capture test result
-        id: tests
+      - name: Test
+        run: npm run test
+
+      - name: Capture build result
+        id: build
         shell: bash
         run: |
           set +e
-          npm run test > test.log 2>&1
+          npm run build > build.log 2>&1
           code=$?
           echo "exit_code=$code" >> "$GITHUB_OUTPUT"
           exit 0
 
-      - name: Upload test diagnostics
+      - name: Upload build diagnostics
         uses: actions/upload-artifact@v4
         with:
-          name: test-diagnostics
-          path: test.log
+          name: build-diagnostics
+          path: build.log
           if-no-files-found: error
           retention-days: 1
 
-      - name: Enforce test result
-        if: steps.tests.outputs.exit_code != '0'
+      - name: Enforce build result
+        if: steps.build.outputs.exit_code != '0'
         run: |
-          cat test.log
+          cat build.log
           exit 1
-
-      - name: Build
-        run: npm run build
