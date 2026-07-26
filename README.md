@@ -138,14 +138,17 @@ The case study demonstrates:
 
 ## Production product and my role
 
-VEXIS is a deployed mental-performance product. I am the founder and developer and took the product from concept to deployment: defining scope, implementing interfaces, integrating authentication and persistence, testing releases, investigating production issues and iterating from observed behaviour.
+VEXIS is a deployed mental-performance product. I am the founder and developer and took the product from concept to deployment: defining scope, implementing interfaces, preparing the Supabase authentication boundary, testing releases, investigating production issues and iterating from observed behaviour.
+
+The current React application bundles its practice catalogue with the application code. Supabase client and runtime-configuration support are implemented, including session-handling behaviour, but the live Vercel deployment has not yet been verified as fully connected to Supabase. Production authentication activation and persistence remain in progress.
 
 The deployed system and this reconstruction serve different purposes:
 
 | Production VEXIS | Public showcase |
 | --- | --- |
-| Active commercial product | Employer-facing engineering evidence |
-| Real authentication and persistence | Mocked service and synthetic data |
+| Deployed React product | Employer-facing engineering evidence |
+| Repository-backed practice catalogue | Synthetic fixtures and mocked transport |
+| Supabase integration boundary implemented; live connection still being completed | No Supabase connection or credentials |
 | Proprietary product content | Generic placeholder content |
 | Private infrastructure and configuration | Inspectable public React/TypeScript patterns |
 | Private repository | Public clean-room reconstruction |
