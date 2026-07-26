@@ -1,11 +1,28 @@
 import { useCallback, useEffect, useState } from "react";
 import { getPractices } from "../services/practice-service";
+import type { ServiceResult } from "../types/api";
 import type { Practice } from "../types/practice";
 
 interface PracticeLibraryState {
   practices: Practice[];
   status: "loading" | "success" | "error";
   errorMessage: string | null;
+}
+
+function stateFromResult(result: ServiceResult<Practice[]>): PracticeLibraryState {
+  if (!result.ok) {
+    return {
+      practices: [],
+      status: "error",
+      errorMessage: result.error.message,
+    };
+  }
+
+  return {
+    practices: result.data,
+    status: "success",
+    errorMessage: null,
+  };
 }
 
 export function usePracticeLibrary() {
@@ -15,25 +32,25 @@ export function usePracticeLibrary() {
     errorMessage: null,
   });
 
-  const load = useCallback(async () => {
-    const result = await getPractices();
-
-    if (!result.ok) {
-      setState({ practices: [], status: "error", errorMessage: result.error.message });
-      return;
-    }
-
-    setState({ practices: result.data, status: "success", errorMessage: null });
-  }, []);
-
   const retry = useCallback(async () => {
     setState((current) => ({ ...current, status: "loading", errorMessage: null }));
-    await load();
-  }, [load]);
+    const result = await getPractices();
+    setState(stateFromResult(result));
+  }, []);
 
   useEffect(() => {
-    void load();
-  }, [load]);
+    let cancelled = false;
+
+    void getPractices().then((result) => {
+      if (!cancelled) {
+        setState(stateFromResult(result));
+      }
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   return { ...state, retry };
 }
