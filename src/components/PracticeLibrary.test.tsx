@@ -26,6 +26,15 @@ describe("PracticeLibrary", () => {
     expect(screen.getByRole("heading", { name: "Observe the Room" })).toBeInTheDocument();
   });
 
+  it("renders a user-safe empty state", async () => {
+    mockedGetPractices.mockResolvedValue({ ok: true, data: [] });
+
+    render(<PracticeLibrary />);
+
+    expect(await screen.findByRole("heading", { name: "No practices found" })).toBeInTheDocument();
+    expect(screen.getByText("Choose another category to view available examples.")).toBeInTheDocument();
+  });
+
   it("filters visible practices by category", async () => {
     const user = userEvent.setup();
     mockedGetPractices.mockResolvedValue({ ok: true, data: samplePractices });
