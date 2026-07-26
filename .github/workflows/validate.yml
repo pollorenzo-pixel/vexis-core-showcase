@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - feature/employer-facing-code-samples
   pull_request:
     branches:
       - main
