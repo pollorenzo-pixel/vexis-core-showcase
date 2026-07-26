@@ -1,93 +1,187 @@
-# VEXIS Core — Mental Performance Platform
+# VEXIS Core — Employer-Facing Engineering Showcase
 
-An engineering case study of a deployed mental performance web application.
+A privacy-safe React and TypeScript reconstruction demonstrating frontend implementation, typed service boundaries, testing, accessibility and engineering judgement behind the VEXIS product.
 
-[Live application](https://www.vexistech.co.uk/) · [Architecture](architecture/README.md) · [Engineering case study](docs/PRODUCT_OVERVIEW.md) · [Repository scope](docs/PRIVACY_AND_SCOPE.md)
+[Live VEXIS product](https://www.vexistech.co.uk/) · [60-second review guide](docs/EMPLOYER_REVIEW_GUIDE.md) · [Engineering decisions](docs/ENGINEERING_DECISIONS.md) · [Debugging case study](docs/DEBUGGING_CASE_STUDY.md) · [Repository boundary](docs/PRIVACY_AND_SCOPE.md)
 
-## Overview
+> This repository is not the production VEXIS codebase. The public demo was independently reconstructed with synthetic data so employers can inspect representative engineering work without exposing commercial source code, user data, credentials or proprietary training content.
 
-VEXIS Core makes structured mental training available through a responsive web application. The deployed product includes a practice library organised around Foundation, Intuition, and Performance, with authenticated user access and persisted user/session data.
+## Review this repository in 60 seconds
 
-This repository documents the engineering work behind the shipped application. It is not the production codebase.
+1. Open [`src/components/PracticeLibrary.tsx`](src/components/PracticeLibrary.tsx) to see typed React composition, category filtering and loading, empty, error and retry states.
+2. Open [`src/services/practice-service.ts`](src/services/practice-service.ts) to see runtime validation and user-safe service errors.
+3. Open the [component and service tests](#tests-and-quality-gates) to see behaviour-focused coverage.
+4. Read the [sanitised debugging case study](docs/DEBUGGING_CASE_STUDY.md) for an example of evidence-led root-cause analysis.
+5. Read the [extraction method](docs/EXTRACTION_METHOD.md) to understand how confidentiality was protected.
 
-## My Role
+A more detailed reviewer path is available in [`docs/EMPLOYER_REVIEW_GUIDE.md`](docs/EMPLOYER_REVIEW_GUIDE.md).
 
-I am the founder and developer. I took the product from concept to deployment: defining the initial scope, implementing the frontend, integrating authentication and persistence, testing releases, investigating production issues, and iterating from observed behaviour.
+## What this repository demonstrates
 
-I used AI-assisted development to explore approaches and accelerate implementation. I remained responsible for requirements, technical choices, code review, testing, debugging, and release decisions.
+- React component composition with TypeScript
+- explicit domain and transport types
+- separation between UI, hooks, services and mock transport
+- loading, success, empty, unavailable and recoverable error states
+- accessible controls, live-status messaging and visible keyboard focus
+- responsive layout behaviour
+- runtime validation of unknown transport data
+- component and service tests with Vitest and Testing Library
+- deterministic dependency installation through `package-lock.json` and `npm ci`
+- automated lint, type-check, test and production-build validation in GitHub Actions
+- privacy-aware technical communication
 
-## Shipped System
+## Public reconstructed demo
 
-- Responsive browser-based training experience
-- Structured practice library
-- Supabase authentication
-- PostgreSQL-backed user and session data
-- GitHub-based source control workflow
-- Vercel deployment
-- Progressive Web App considerations in the application structure
+The demo presents a synthetic practice library organised around three generic categories:
 
-## Technology and Rationale
+- Awareness
+- Intuition
+- Performance
 
-| Area | Technology | Reasoning and trade-off |
-| --- | --- | --- |
-| Frontend | HTML, CSS, JavaScript | Kept the shipped application simple and browser-native. This reduced framework overhead, but required more manual organisation as the interface grew. |
-| Authentication | Supabase Auth | Provided managed identity and session handling without building a custom authentication service. The trade-off is dependency on a platform-specific integration. |
-| Persistence | Supabase / PostgreSQL | Combined a relational data model with managed infrastructure. This reduced operational work while still requiring careful data modelling and access-control decisions. |
-| Hosting | Vercel | Supported repeatable web deployments and a short feedback loop from repository changes to production. |
-| Workflow | Git and GitHub | Provided version history, isolated changes, and a recoverable deployment workflow. |
-| UX | Responsive design and PWA concepts | Prioritised access across mobile and desktop browsers. PWA readiness is an architectural direction, not a claim of complete offline support. |
+It includes reusable practice cards, filtering, disabled states, selection feedback and recoverable data-loading behaviour. The titles, descriptions, identifiers and service responses are synthetic and do not reproduce the private VEXIS catalogue.
 
-## Architecture
+### Code map
 
-```text
-                         ┌──────────────────────┐
-                         │   Supabase Auth      │
-                         └──────────▲───────────┘
-                                    │
-User ──► VEXIS Core frontend ───────┤
-             │                      │
-             │                      ▼
-             │           ┌──────────────────────┐
-             │           │ PostgreSQL database  │
-             │           └──────────────────────┘
-             ▼
-       Vercel hosting
+| Area | Evidence |
+| --- | --- |
+| Application composition | [`src/App.tsx`](src/App.tsx) |
+| Practice-library interaction | [`src/components/PracticeLibrary.tsx`](src/components/PracticeLibrary.tsx) |
+| Reusable typed card | [`src/components/PracticeCard.tsx`](src/components/PracticeCard.tsx) |
+| Loading and error presentation | [`src/components/StatusPanel.tsx`](src/components/StatusPanel.tsx) |
+| Data lifecycle | [`src/hooks/usePracticeLibrary.ts`](src/hooks/usePracticeLibrary.ts) |
+| Runtime validation and service errors | [`src/services/practice-service.ts`](src/services/practice-service.ts) |
+| Synthetic transport | [`src/services/mock-api.ts`](src/services/mock-api.ts) |
+| Domain types | [`src/types/practice.ts`](src/types/practice.ts) |
+| Synthetic fixtures | [`src/data/sample-practices.ts`](src/data/sample-practices.ts) |
+
+## Tests and quality gates
+
+The public reconstruction includes behaviour-focused coverage for:
+
+- accessible start actions
+- unavailable practices
+- loading-state announcements
+- category filtering
+- recoverable errors and retry
+- malformed transport data
+- safe mapping of internal failures to user-facing messages
+
+Relevant files:
+
+- [`src/components/PracticeCard.test.tsx`](src/components/PracticeCard.test.tsx)
+- [`src/components/PracticeLibrary.test.tsx`](src/components/PracticeLibrary.test.tsx)
+- [`src/services/practice-service.test.ts`](src/services/practice-service.test.ts)
+- [`.github/workflows/validate.yml`](.github/workflows/validate.yml)
+
+Every pull request and relevant branch update runs:
+
+```bash
+npm run lint
+npm run typecheck
+npm run test
+npm run build
 ```
 
-Vercel hosts the frontend; the application uses Supabase for authentication and access to PostgreSQL-backed data. The diagram is intentionally conceptual because deployment configuration, database design, and access policies belong to the private production repository.
+## Run locally
 
-See the [architecture overview](architecture/README.md) for component responsibilities, request flow, and trade-offs.
+Requirements:
 
-## Engineering Approach
+- Node.js 22
+- npm
 
-Development followed small, testable increments:
+Install and validate:
 
-1. Define a user-facing problem and the smallest useful change.
-2. Implement and test the change locally.
-3. Commit the change with Git and deploy through the GitHub/Vercel workflow.
-4. Verify behaviour in the deployed environment.
-5. Diagnose regressions by separating frontend, authentication, persistence, and deployment concerns.
-6. Use the result to choose the next improvement.
+```bash
+npm ci
+npm run validate
+```
 
-This process made failures easier to isolate and kept product decisions connected to working software rather than speculative scope.
+Start the local development server:
 
-## Technical Lessons
+```bash
+npm run dev
+```
 
-- Shipping exposed integration problems that were not visible when frontend, authentication, and data persistence were considered separately.
-- Production debugging improved when I identified the failing boundary first—browser state, authentication, database interaction, or deployment—before changing code.
-- Managed services reduced the amount of infrastructure I needed to operate, but did not remove responsibility for session behaviour, data access, error handling, or configuration.
-- Small commits and repeatable deployments made iteration safer and regressions easier to trace.
-- Responsive behaviour needs testing at realistic viewport sizes and interaction states, not only visual inspection at desktop width.
-- AI assistance is most useful when paired with explicit requirements, review, verification, and ownership of the final decision.
+## Engineering decisions
 
-## Current Status and Scope
+The showcase uses React, TypeScript, Vite, Vitest, Testing Library and ESLint. The structure deliberately keeps UI rendering separate from data lifecycle and transport validation.
 
-VEXIS Core is deployed at [vexistech.co.uk](https://www.vexistech.co.uk/). A newer React migration is in progress and is intentionally excluded because it is not the deployed system documented here.
+Key decisions and trade-offs are documented in [`docs/ENGINEERING_DECISIONS.md`](docs/ENGINEERING_DECISIONS.md).
 
-The production repository remains private because VEXIS is an active commercial project. This public case study excludes source code, credentials, database schemas, access policies, environment configuration, prototypes, customer data, and commercially sensitive implementation details. The full boundary is documented in [Privacy and Showcase Scope](docs/PRIVACY_AND_SCOPE.md).
+## Accessibility and responsive quality
 
-Screenshots are also intentionally omitted for now: the live application is available, and static images would add little engineering evidence unless they demonstrate a specific responsive, accessibility, performance, or debugging decision.
+Implemented evidence includes:
+
+- semantic sections and headings
+- accessible button names
+- disabled-state semantics
+- `aria-pressed` filter state
+- polite live-region feedback
+- visible keyboard focus
+- reduced-motion handling
+- responsive one-, two- and three-column layouts
+
+The current QA record, including checks that remain manual rather than claimed as complete, is documented in [`docs/ACCESSIBILITY_AND_RESPONSIVE_QA.md`](docs/ACCESSIBILITY_AND_RESPONSIVE_QA.md).
+
+## Debugging evidence
+
+[`docs/DEBUGGING_CASE_STUDY.md`](docs/DEBUGGING_CASE_STUDY.md) describes a sanitised incident where an apparent platform or caching issue was traced to Git branch ancestry and deployment provenance.
+
+The case study demonstrates:
+
+- maintaining competing hypotheses
+- collecting repository and configuration evidence
+- locating the actual failing boundary
+- applying a focused correction
+- validating the fix
+- documenting a prevention lesson
+
+## Production product and my role
+
+VEXIS is a deployed mental-performance product. I am the founder and developer and took the product from concept to deployment: defining scope, implementing interfaces, integrating authentication and persistence, testing releases, investigating production issues and iterating from observed behaviour.
+
+The deployed system and this reconstruction serve different purposes:
+
+| Production VEXIS | Public showcase |
+| --- | --- |
+| Active commercial product | Employer-facing engineering evidence |
+| Real authentication and persistence | Mocked service and synthetic data |
+| Proprietary product content | Generic placeholder content |
+| Private infrastructure and configuration | Inspectable public React/TypeScript patterns |
+| Private repository | Public clean-room reconstruction |
+
+The live product is available at [vexistech.co.uk](https://www.vexistech.co.uk/).
+
+## Confidentiality boundary
+
+The public repository intentionally excludes:
+
+- production source files copied wholesale
+- credentials and environment configuration
+- Supabase project details, schemas and access policies
+- customer, session, analytics or behavioural data
+- payment configuration
+- proprietary practice scripts and protected audio
+- SignAI recommendation logic and private prompts
+- unreleased implementation details
+
+Read [`docs/EXTRACTION_METHOD.md`](docs/EXTRACTION_METHOD.md) and [`docs/PRIVACY_AND_SCOPE.md`](docs/PRIVACY_AND_SCOPE.md) for the complete boundary.
+
+## Additional documentation
+
+- [Product overview](docs/PRODUCT_OVERVIEW.md)
+- [Architecture overview](architecture/README.md)
+- [Engineering decisions](docs/ENGINEERING_DECISIONS.md)
+- [Extraction method](docs/EXTRACTION_METHOD.md)
+- [Debugging case study](docs/DEBUGGING_CASE_STUDY.md)
+- [Accessibility and responsive QA](docs/ACCESSIBILITY_AND_RESPONSIVE_QA.md)
+- [Employer review guide](docs/EMPLOYER_REVIEW_GUIDE.md)
+- [Privacy and showcase scope](docs/PRIVACY_AND_SCOPE.md)
+
+## AI-assisted development
+
+AI-assisted development was used to explore approaches and accelerate implementation. I remained responsible for requirements, technical choices, reviewing generated changes, testing, debugging and release decisions.
 
 ## Licence
 
-The original documentation in this repository is available under the [MIT License](LICENSE). VEXIS names, branding, product content, and the private production application are not granted for reuse by this licence.
+The original public documentation and clean-room demonstration code in this repository are available under the [MIT License](LICENSE). VEXIS names, branding, proprietary product content and the private production application are not granted for reuse by that licence.
